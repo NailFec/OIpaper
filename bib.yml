@@ -1,0 +1,16 @@
+question1:
+  type: web
+  title: "[SDOI2009] HH的项链"
+  author: "山东省选 2009"
+  url: "https://www.luogu.com.cn/problem/P1972"
+
+question2:
+  type: web
+  title: "[国家集训队] 数颜色 / 维护队列"
+  url: "https://www.luogu.com.cn/problem/P1903"
+
+question3:
+  type: web
+  title: "[Ynoi2016] 镜子里的昆虫"
+  author: "nzhtl1477"
+  url: "https://www.luogu.com.cn/problem/P4690"
