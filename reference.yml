@@ -1,6 +1,27 @@
-mo:
+Bmo:
   type: Web
   title: OI Wiki - 莫队算法
   author: konnyakuxzy
   url: https://oi-wiki.org/misc/mo-algo/
-  date: 2018-7-30
+  date: 2018-07-30
+
+Bmobetter1:
+  type: Web
+  title: 重新编号颜色优化莫队算法
+  author: Ooj_bai
+  url: https://www.luogu.com.cn/discuss/929927
+  date: 2024-09-19
+
+Bmobetter2:
+  type: Web
+  title: 通过优化桶优化莫队算法
+  author: Phantom_Landler
+  url: https://www.luogu.com.cn/discuss/1005310
+  date: 2024-11-25
+
+Bscan:
+  type: Web
+  title: 扫描线注意事项
+  author: OrientDragon
+  url: https://www.luogu.com.cn/discuss/983188
+  date: 2024-11-02
