@@ -5,8 +5,7 @@ using namespace std;
 #define rd(x) get<2>(x)
 typedef tuple<int, int, int> tup;
 
-constexpr int MAX = 1e6 + 9;
-constexpr int MAXn = 1e6 + 9;
+constexpr int MAX = 1e6 + 9, MAXn = 1e6 + 9;
 int a[MAXn], ans[MAXn];
 int mp[MAX], col;
 int cnt[MAX], sum = 0;
