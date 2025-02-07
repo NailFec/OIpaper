@@ -52,13 +52,13 @@
 
 === 思路分析
 
-分块是一种常见的优化方法，适用于区间查询问题。将序列分为若干块，每个块内的元素个数相等。先预处理每个块内不同元素的个数。对于每个询问区间 $[l, r]$，如果 $l$ 和 $r$ 在同一个块内，则直接暴力计算；如果 $l$ 和 $r$ 不在同一个块内，利用 $[l, r]$ 内部的块的预处理结果，避免重复计算，减少时间复杂度。
+分块是一种常见的优化方法，适用于区间查询问题。将序列分为若干块，每个块内的元素个数相等。先预处理每个块内不同元素的个数。对于每个询问区间 $[l, r]$，如果 $l$ 和 $r$ 在同一个块内，则直接暴力计算；如果 $l$ 和 $r$ 不在同一个块内，利用 $[l, r]$ 真包含的块的预处理结果，避免重复计算，减少时间复杂度。
 
 === 解法
 
 在读入时，预处理 $a_i$ 上一次出现的位置 $bef_i$ 和下一次出现的位置 $nxt_i$。这步预处理操作可以在 $O(N)$ 的时间复杂度内完成。
 
-首先，我们需要将序列分为若干块。设序列长度为 $N$，块的大小 $S = floor(sqrt(N))$，共有 $D = ceil(N / s)$ 块。对于每个块，需要暴力地计算块内不同元素的个数。记二维数组 $f_(i,j)$ 表示第 $i$ 到第 $j$ 个块内不同元素的个数。则第 $i$ 个块内不同元素的个数即为 $f_(i, i)$。此操作可以使用一个布尔数组记录 $a_i$ 是否出现过，也可以利用 $bef$ 数组实现。
+首先，我们需要将序列分为若干块。设序列长度为 $N$，块的大小 $S = floor(sqrt(N))$，共有 $D = ceil(N / S)$ 块。对于每个块，需要暴力地计算块内不同元素的个数。记二维数组 $f_(i,j)$ 表示第 $i$ 到第 $j$ 个块内不同元素的个数。则第 $i$ 个块内不同元素的个数即为 $f_(i, i)$。此操作可以借用一个布尔数组记录 $a_i$ 是否出现过，也可以利用 $bef$ 数组实现。
 
 我们可以使用递推的方法，计算 $f$ 数组的所有值。其递推公式为 $f_(i, j) = f_(i, j - 1) + x$，其中 $x$ 表示第 $j$ 个块内新增的不同元素的个数，即在第 $j$ 个块内出现，而没有在第 $i$ 到第 $j - 1$ 个块内出现的元素个数。此操作可利用 $bef$ 数组实现。对于每个递推过程，我们可以在 $O(S)$ 的时间复杂度内完成转移。至此，我们完成了所有预处理操作。
 
@@ -82,7 +82,7 @@
 - 洛谷 P1471 方差
 - 洛谷 P1975 [国家集训队] 排队
 
-#h(2em) 对于难度更高的大分块题目，推荐 #link("https://www.luogu.com.cn/training/44148#information")[洛谷题单 - YNOI 大分块系列]。
+#h(2em) 对于难度更高的大分块题目，推荐 洛谷题单 - YNOI 大分块系列#footnote(" https://www.luogu.com.cn/training/44148")。
 
 == 普通莫队算法
 
@@ -98,7 +98,7 @@
 
 先对询问区间进行排序。莫队算法也使用了分块的思想，将区间分为多个块，所有左端点 $l$ 在同一个块内的区间为一个整体。对于每个块，按照区间的右端点从小到大进行排序。最终的结果如 @Gmo1 所示。这样离线的好处在后文可以体现。
 
-用两个指针 $p, q$ 表示现已计算好的区间 $[p, q]$，记该区间内不同元素的个数为 $nsum$，区间内数 $x$ 出现的次数为 $cnt_x$。在处理区间 $[l_i, r_i]$ 时，将左指针 $p$ 逐位移动到 $l_i$。如果 $p$ 需要向左移动 $1$ 位，且$a_(p-1)$ 在 $[p,q]$ 中没有出现过，则将 $nsum$ 增加 $1$，否则 $nsum$ 保持不变。同时，也要将 $cnt_a_(p-1)$ 增加 $1$，表示新的 $[p, q]$ 内该数的出现次数增加 $1$ 次。如果 $p$ 需要向右移动 $1$ 位，则将 $cnt_a_(p+1)$ 减少 $1$。如果现在 $cnt_a_(p+1) = 0$，即最后的一个 $a_(p+1)$ 被移出了 $[p, q]$，则将 $nsum$ 减少 $1$，否则 $nsum$ 保持不变。右端点 $q$ 的移动方式与左端点相反。
+用两个指针 $p, q$ 表示现已计算好的区间 $[p, q]$，记该区间内不同元素的个数为 $nsum$，区间内数 $x$ 出现的次数为 $cnt_x$。在处理区间 $[l_i, r_i]$ 时，将左指针 $p$ 逐位移动到 $l_i$。如果 $p$ 需要向左移动 $1$ 位，且 $cnt_(p-1) = 0$，即$a_(p-1)$ 在 $[p,q]$ 中没有出现过，则将 $nsum$ 增加 $1$；否则 $nsum$ 保持不变。同时，也要将 $cnt_a_(p-1)$ 增加 $1$，表示新的 $[p, q]$ 内该数的出现次数增加 $1$ 次。如果 $p$ 需要向右移动 $1$ 位，则将 $cnt_a_(p+1)$ 减少 $1$。如果现在 $cnt_a_(p+1) = 0$，即最后的一个 $a_(p+1)$ 被移出了 $[p, q]$，则将 $nsum$ 减少 $1$；否则 $nsum$ 保持不变。右端点 $q$ 的移动方式与左端点相反。
 
 通过这样的暴力转移，我们可以在上一个区间的答案的基础上计算得到下一个区间的答案。经过离线的排序，如 @Gmo1 所示，我们不难发现：左指针在同一个块内的移动距离较小，而右指针在每个块内都是单调增加的。这样的离线使总转移距离尽可能小，这便是莫队算法的核心思想。
 
@@ -145,23 +145,21 @@
 
 === 解法
 
-首先，我们需要预处理序列中每个元素上一次出现的位置。记序列第 $i$ 位的值为 $a_i$，$a_i$ 上一次在序列中出现的位置为 $p_i$。这个预处理可以在读入序列时完成，时间复杂度为 $O(N)$。
+首先，我们需要预处理序列中每个元素上一次出现的位置。记序列第 $i$ 位的值为 $a_i$，$a_i$ 上一次在序列中出现的位置为 $bef_i$。这个预处理可以在读入序列时完成，时间复杂度为 $O(N)$。
 
-我们可以考虑将询问离线。具体来说，将每个查询区间按照其右端点 $r$ 升序排序。这样的离线可以在处理查询时，利用之前处理的结果，避免重复计算。记排序后第 $i$ 个询问为 $[l_i, r_i]$。
+我们可以考虑将询问离线。具体来说，将每个查询区间按照其右端点 $r$ 升序排序。这样的离线方便维护上文所述的 $01$ 树状数组。记排序后第 $i$ 个询问为 $[l_i, r_i]$。
 
-我们可以使用树状数组来维护每个位置的状态。树状数组可以实现在 $O(log N)$ 的时间复杂度内完成单点更新和区间查询的操作。
+使用树状数组维护每个位置的状态。每次根据 $r$ 的升序计算询问区间的同时，更新树状数组。假设上一个处理的区间为 $[l_i, r_i]$，则现在处理的区间为 $[l_(i+1), r_(i+1)]$，我们需要更新树状数组 $(c_(r_i), c_(r_(i+1))]$ 区间的每个值。
 
-每次根据 $r$ 的升序计算询问区间的同时，更新树状数组。假设上一个处理的区间为 $[l_i, r_i]$，则现在处理的区间为 $[l_(i+1), r_(i+1)]$，我们需要更新树状数组 $(c_(r_i), c_(r_(i+1))]$ 区间的每个值。
-
-对于相同的值，我们只关心这个值在区间中出现的最右一个。如果 $a_i$ 在 $[1, i)$ 之间没有出现过（即 $p_i = 0$），则将 $c_i$ 记为 $1$；如果 $a_i$ 在 $[1, i)$ 之间出现过（即 $p_i != 0$），则将 $c_i$ 记为 $1$ 的同时将 $c_(p_i)$ 记为 $0$（在维护树状数组时，通过将 $c_i$ 加 $1$ 或减 $1$ 的方式实现）。因此，我们就避免了重复计算同一个数值。$[l_i, r_i]$ 区间内的不同数的个数即为 $sum_(j=l_i)^(r_i) c_j$（树状数组通过 $"query"(r_i) - "query"(l_i - 1)$ 实现）。
+对于相同的值，我们只关心这个值在区间中出现的最右一个。如果 $a_i$ 在 $[1, i)$ 之间没有出现过（即 $bef_i = 0$），则将 $c_i$ 记为 $1$；如果 $a_i$ 在 $[1, i)$ 之间出现过（即 $bef_i != 0$），则将 $c_i$ 记为 $1$ 的同时将 $c_(bef_i)$ 记为 $0$（在维护树状数组时，通过将 $c_i$ 加 $1$ 或减 $1$ 的方式实现）。因此，我们就避免了重复计算同一个数值。$[l_i, r_i]$ 区间内的不同数的个数即为 $sum_(j=l_i)^(r_i) c_j$（树状数组通过 $"query"(r_i) - "query"(l_i - 1)$ 实现）。
 
 除了树状数组，我们还可以使用线段树来实现，实现方法与树状数组类似。线段树的每个节点维护区间内的不同数的个数。在更新和查询线段树时，我们可以通过递归地更新或查询左右子树来实现。其常数时间复杂度较树状数组更大，且代码实现较为复杂。
 
 === 时间复杂度
 
-该算法的时间复杂度为 $O((N + M) log N)$，其中 $N$ 为序列长度，$M$ 为询问区间的数量。预处理 ${p_i}$ 的时间复杂度为 $O(N)$。将查询按照右端点 $r$ 排序的时间复杂度为 $O(M log M)$。对于所有查询，更新树状数组或线段树的时间复杂度为 $O((N + M) log N)$。
+该算法的时间复杂度为 $O((N + M) log N)$，其中 $N$ 为序列长度，$M$ 为询问区间的数量。预处理 ${bef_i}$ 的时间复杂度为 $O(N)$。将查询按照右端点 $r$ 排序的时间复杂度为 $O(M log M)$。对于所有查询，更新树状数组或线段树的时间复杂度为 $O((N + M) log N)$。
 
-使用树状数组 / 线段树实现本题游刃有余，不需要过多的优化。但是，相比莫队算法，其代码实现略显复杂。
+使用树状数组 / 线段树实现本题游刃有余，不需要过多的优化，其关键在于如何对询问离线，以及树状数组 / 线段树维护什么内容。相比莫队算法，其思路和代码实现略显复杂。
 
 == 扫描线
 
@@ -179,7 +177,7 @@ https://www.luogu.com.cn/article/rzuy3es9
 
 == 总结
 
-除了上文提供的解法，本题还有不少可以拿到部分分的解法。例如，可以使用线段树套线段树、主席树等数据结构。这些数据结构在本题的数据范围内无法完全通过，但在一些特定的问题上能够提供更好的解法。
+除了上文提供的解法，本题还有不少可以拿到部分分的解法。例如，可以使用线段树套线段树、主席树等暴力数据结构。这些数据结构在本题的数据范围内无法完全通过，但其思路简单，在一些特定的问题上能够提供更好的解法。
 
 = 区间询问、单点修改
 
@@ -248,6 +246,92 @@ https://oi-wiki.org/misc/odt/
 #primary_heading([= 附#h(2em)录])
 
 #set heading(outlined: false)
+
+== 问题1 - 分块解法
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+constexpr int MAX = 1e6 + 9, MAXn = 1e6 + 9, MAXsn = 1e3 + 9;
+int a[MAXn], c[MAXn], p[MAXn], ans[MAXn];
+int last[MAX], bef[MAXn], nxt[MAXn];
+int d[MAXsn][MAXsn];
+int n, sn, dn;
+
+pair<int, int> border(const int & di) {
+    int p = (di - 1) * sn + 1;
+    int q = min(di * sn, n);
+    return {p, q};
+}
+
+int piece(const int & p, const int & q) {
+    bitset<MAX> ved;
+    int ans = 0;
+    for (int i = p; i <= q; ++i) {
+        ans += !ved[a[i]];
+        ved[a[i]] = true;
+    }
+    return ans;
+}
+
+int main() {
+    scanf("%d", &n);
+    sn = sqrt(n);
+    dn = (n - 1) / sn + 1;
+    for (int i = 1; i <= n; ++i) {
+        scanf("%d", &a[i]);
+        bef[i] = last[a[i]];
+        if (bef[i]) nxt[bef[i]] = i;
+        nxt[i] = n + 1;
+        last[a[i]] = i;
+    }
+
+    for (int di = 1; di <= dn; ++di) {
+        int p, q;
+        tie(p, q) = border(di);
+        d[di][di] = piece(p, q);
+    }
+    for (int dis = 2; dis <= sn; ++dis) {
+        for (int di = 1; ; ++di) {
+            int dj = di + dis - 1;
+            if (dj > dn) break;
+            d[di][dj] = d[di][dj - 1];
+            // [di+0][di+1][di+2][di+3][dj-1][dj-0]
+            // [         d[di][dj-1]        ]
+            // ^bp                           ^p   ^q
+            int bp = border(di).first, p, q;
+            tie(p, q) = border(dj);
+            for (int i = p; i <= q; ++i)
+                d[di][dj] += bef[i] < bp;
+                //^ Do not use `if (bef[i] < bp) ++d[di][dj];`,
+                //^ or its running time will be doubled.
+        }
+    }
+
+    int m;
+    scanf("%d", &m);
+    for (int _ = 1; _ <= m; ++_) {
+        int p, q, ans = 0;
+        scanf("%d %d", &p, &q);
+        int l = p / sn + 1, r = q / sn + 1;
+        if (r - l <= 1) {
+            ans = piece(p, q);
+        } else {
+            ans = d[l + 1][r - 1];
+            // {p+0}{p+1}[l+1][l+2][r-2][r-1]{q-1}{q-0}
+            //           ^m                 ^n
+            int m = border(l + 1).first, n = border(r - 1).second;
+            for (int i = p; i < m; ++i)
+                ans += nxt[i] > n;
+            for (int i = q; i > n; --i)
+                ans += bef[i] < p;
+        }
+        printf("%d\n", ans);
+    }
+    return 0;
+}
+```
 
 == 问题1 - 普通莫队解法（无优化）
 
@@ -554,92 +638,6 @@ int main() {
     }
     for (int i = 1; i <= m; ++i)
         printf("%d\n", ans[i]);
-    return 0;
-}
-```
-
-== 问题1 - 分块解法
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-constexpr int MAX = 1e6 + 9, MAXn = 1e6 + 9, MAXsn = 1e3 + 9;
-int a[MAXn], c[MAXn], p[MAXn], ans[MAXn];
-int last[MAX], bef[MAXn], nxt[MAXn];
-int d[MAXsn][MAXsn];
-int n, sn, dn;
-
-pair<int, int> border(const int & di) {
-    int p = (di - 1) * sn + 1;
-    int q = min(di * sn, n);
-    return {p, q};
-}
-
-int piece(const int & p, const int & q) {
-    bitset<MAX> ved;
-    int ans = 0;
-    for (int i = p; i <= q; ++i) {
-        ans += !ved[a[i]];
-        ved[a[i]] = true;
-    }
-    return ans;
-}
-
-int main() {
-    scanf("%d", &n);
-    sn = sqrt(n);
-    dn = (n - 1) / sn + 1;
-    for (int i = 1; i <= n; ++i) {
-        scanf("%d", &a[i]);
-        bef[i] = last[a[i]];
-        if (bef[i]) nxt[bef[i]] = i;
-        nxt[i] = n + 1;
-        last[a[i]] = i;
-    }
-
-    for (int di = 1; di <= dn; ++di) {
-        int p, q;
-        tie(p, q) = border(di);
-        d[di][di] = piece(p, q);
-    }
-    for (int dis = 2; dis <= sn; ++dis) {
-        for (int di = 1; ; ++di) {
-            int dj = di + dis - 1;
-            if (dj > dn) break;
-            d[di][dj] = d[di][dj - 1];
-            // [di+0][di+1][di+2][di+3][dj-1][dj-0]
-            // [         d[di][dj-1]        ]
-            // ^bp                           ^p   ^q
-            int bp = border(di).first, p, q;
-            tie(p, q) = border(dj);
-            for (int i = p; i <= q; ++i)
-                d[di][dj] += bef[i] < bp;
-                //^ Do not use `if (bef[i] < bp) ++d[di][dj];`,
-                //^ or its running time will be doubled.
-        }
-    }
-
-    int m;
-    scanf("%d", &m);
-    for (int _ = 1; _ <= m; ++_) {
-        int p, q, ans = 0;
-        scanf("%d %d", &p, &q);
-        int l = p / sn + 1, r = q / sn + 1;
-        if (r - l <= 1) {
-            ans = piece(p, q);
-        } else {
-            ans = d[l + 1][r - 1];
-            // {p+0}{p+1}[l+1][l+2][r-2][r-1]{q-1}{q-0}
-            //           ^m                 ^n
-            int m = border(l + 1).first, n = border(r - 1).second;
-            for (int i = p; i < m; ++i)
-                ans += nxt[i] > n;
-            for (int i = q; i > n; --i)
-                ans += bef[i] < p;
-        }
-        printf("%d\n", ans);
-    }
     return 0;
 }
 ```
